@@ -47,7 +47,7 @@ const Dashboard = () => {
   const { timeframe, setTimeframe } = useAppStore((state) => state);
   const [graph, setGraph] = useState({ value: "Leads", label: "Leads" });
 
-  const graphs = ["Leads", "Inquiries", "Quotations", "Tasks"];
+  const graphs = ["Leads", "Inquiries", "Quotations"];
   const dashboardData = useDashboard();
 
   const router = useRouter();
@@ -63,13 +63,18 @@ const Dashboard = () => {
   const handleTimeframeChange = (timeframe: any) => {
     setTimeframe(timeframe as Timeframe);
     console.log(timeframe);
-    queryClient.invalidateQueries({
-      queryKey: ["getDashboard"],
-    });
+    setTimeout(() => {
+      queryClient.invalidateQueries({
+        queryKey: ["getDashboard"],
+      });
+    }, 500);
+    // queryClient.invalidateQueries({
+    //   queryKey: ["getDashboard"],
+    // });
   };
 
-  const handleGraphChange = (value: any) => {
-    setGraph(value);
+  const handleGraphChange = (item: any) => {
+    setGraph(item);
   };
 
   return (
@@ -86,7 +91,7 @@ const Dashboard = () => {
           {/* Right Side - Dropdown and Icon */}
           <View className="flex-row flex flex-1 items-center">
             {/* Dropdown */}
-            <View className="w-3/4 mr-4">
+            <View>
               <Select
                 defaultValue={{
                   value: timeframes[0].value,
@@ -131,9 +136,9 @@ const Dashboard = () => {
             </View>
 
             {/* Notification Icon */}
-            <View className="flex items-center">
+            {/* <View className="flex items-center">
               <Ionicons name="notifications-outline" size={25} />
-            </View>
+            </View> */}
           </View>
         </View>
 
@@ -200,25 +205,26 @@ const Dashboard = () => {
                       sections={[
                         {
                           percentage: Math.round(
-                            ((dashboardData.data?.[0]?.pending_lead || 0) /
-                              (dashboardData.data?.[0]?.total_lead || 1)) *
+                            ((dashboardData.data[0].pending_lead || 0) /
+                              (dashboardData.data[0].total_lead || 1)) *
                               100
                           ),
                           color: "blue",
                           label: "Pending Lead",
                         },
                         {
-                          percentage: Math.round(
-                            (1 -
-                              (dashboardData.data?.[0]?.pending_lead || 0) /
+                          percentage:
+                            100 -
+                            Math.round(
+                              ((dashboardData.data?.[0]?.pending_lead || 0) /
                                 (dashboardData.data?.[0]?.total_lead || 1)) *
-                              100
-                          ),
+                                100
+                            ),
                           color: "lightblue",
                           label: "Inquired Lead",
                         },
                       ]}
-                      radius={80}
+                      radius={100}
                       strokeWidth={15}
                       textColor="black"
                     />
@@ -236,7 +242,7 @@ const Dashboard = () => {
                   <Pressable
                     onPress={() => {
                       router.push({
-                        pathname: "/(marketing)/m_lead/m_leadList/",
+                        pathname: "/(marketing)/m_followup/m_followUpList/",
                       });
                     }}
                   >
@@ -244,8 +250,8 @@ const Dashboard = () => {
                       sections={[
                         {
                           percentage: Math.round(
-                            (dashboardData.data[0]?.pending_inquiry ||
-                              0 / dashboardData.data[0]?.total_inquiry ||
+                            (dashboardData.data[0].pending_inquiry ||
+                              0 / dashboardData.data[0].total_inquiry ||
                               1) * 100
                           ),
                           color: "green",
@@ -253,15 +259,17 @@ const Dashboard = () => {
                         },
                         {
                           percentage: Math.round(
-                            (1 - dashboardData.data[0]?.pending_inquiry ||
-                              0 / dashboardData.data[0]?.total_inquiry ||
-                              1) * 100
+                            100 -
+                              (dashboardData.data[0].pending_inquiry ||
+                                0 / dashboardData.data[0].total_inquiry ||
+                                1) *
+                                100
                           ),
                           color: "lightgreen",
                           label: "Quotation Send",
                         },
                       ]}
-                      radius={80}
+                      radius={100}
                       strokeWidth={15}
                       textColor="black"
                     />
@@ -278,7 +286,7 @@ const Dashboard = () => {
                   <Pressable
                     onPress={() => {
                       router.push({
-                        pathname: "/(marketing)/m_lead/m_leadList/",
+                        pathname: "/(marketing)/m_followup/m_followUpList/",
                       });
                     }}
                   >
@@ -286,46 +294,37 @@ const Dashboard = () => {
                       sections={[
                         {
                           percentage: Math.round(
-                            (dashboardData.data[0]?.pending_quotation ||
-                              0 / dashboardData.data[0]?.total_quotation ||
+                            (dashboardData.data[0].pending_quotation ||
+                              0 / dashboardData.data[0].total_quotation ||
                               1) * 100
                           ),
                           color: "red",
                           label: "Pending Quotations",
                         },
                         {
-                          percentage: Math.round(
-                            (1 - dashboardData.data[0]?.pending_quotation ||
-                              0 / dashboardData.data[0]?.total_quotation ||
-                              1) * 100
-                          ),
+                          percentage:
+                            100 -
+                            Math.round(
+                              (dashboardData.data[0].pending_quotation /
+                                dashboardData.data[0].total_quotation) *
+                                100
+                            ),
                           color: "tomato",
                           label: "Order Send",
                         },
                       ]}
-                      radius={80}
+                      radius={100}
                       strokeWidth={15}
                       textColor="black"
                     />
                   </Pressable>
                 )
               )}
-              {graph.value === "Tasks" && (
-                <DonutChart
-                  sections={[
-                    { percentage: 10, color: "yellow", label: "A" },
-                    { percentage: 90, color: "lightyellow", label: "B" },
-                  ]}
-                  radius={80}
-                  strokeWidth={15}
-                  textColor="black"
-                />
-              )}
             </View>
           </View>
         </View>
 
-        <View className="p-4 rounded-lg shadow-lg mb-6 w-full bg-slate-100">
+        {/* <View className="p-4 rounded-lg shadow-lg mb-6 w-full bg-slate-100">
           <View className="w-full">
             <Text className="text-2xl font-acumin_bold text-gray-600">
               Tasks Overview
@@ -371,7 +370,7 @@ const Dashboard = () => {
               </View>
             </View>
           </View>
-        </View>
+        </View> */}
 
         {/* <View className='p-4 rounded-lg mb-6 shadow-lg w-full bg-slate-100'>
           <View className='flex flex-row items-center m-4'>
@@ -437,20 +436,31 @@ const Dashboard = () => {
                 <Text className="text-2xl font-acumin_bold text-gray-600">
                   Companies
                 </Text>
-                <View className="bg-gray-400 px-2 py-1 rounded-full">
-                  <Text className="text-white">100</Text>
-                </View>
+                {/* <View className="bg-gray-400 px-2 py-1 rounded-full">
+                  <Text className="text-white">3</Text>
+                </View> */}
               </View>
-              <Pressable>
+              {/* <Pressable>
                 <Text className="text-blue-600 font-acumin_bold">View All</Text>
-              </Pressable>
+              </Pressable> */}
             </View>
             <View className="flex-col gap-5">
               <View className="flex-row items-center border-[1px] border-gray-400 rounded-lg p-4 gap-5 mt-6">
                 <Ionicons name="person" size={20} />
                 <View className="flex-col">
                   <Text className="text-gray-600 font-acumin text-lg">
-                    Prashant Group
+                    Prashant Gamatex pvt. ltd.
+                  </Text>
+                  <Text className="text-gray-600 font-acumin text-lg">
+                    Ahmedabad, Gujarat
+                  </Text>
+                </View>
+              </View>
+              <View className="flex-row items-center border-[1px] border-gray-400 rounded-lg p-4 gap-5">
+                <Ionicons name="person" size={20} />
+                <View className="flex-col">
+                  <Text className="text-gray-600 font-acumin text-lg">
+                    Prashant Ferber pvt. ltd.
                   </Text>
                   <Text className="text-gray-600 font-acumin text-lg">
                     Ahmedabad,Gujarat
@@ -461,21 +471,10 @@ const Dashboard = () => {
                 <Ionicons name="person" size={20} />
                 <View className="flex-col">
                   <Text className="text-gray-600 font-acumin text-lg">
-                    Prashant Group
+                    Prashant Westpoint pvt. ltd.
                   </Text>
                   <Text className="text-gray-600 font-acumin text-lg">
-                    Ahmedabad,Gujarat
-                  </Text>
-                </View>
-              </View>
-              <View className="flex-row items-center border-[1px] border-gray-400 rounded-lg p-4 gap-5">
-                <Ionicons name="person" size={20} />
-                <View className="flex-col">
-                  <Text className="text-gray-600 font-acumin text-lg">
-                    Prashant Group
-                  </Text>
-                  <Text className="text-gray-600 font-acumin text-lg">
-                    Ahmedabad,Gujarat
+                    Ahmedabad, Gujarat
                   </Text>
                 </View>
               </View>

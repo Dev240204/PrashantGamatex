@@ -41,7 +41,7 @@ const _layout = () => {
           headerShown: false,
         }}
       />
-      <Tabs.Screen
+      {/* <Tabs.Screen
         name="m_expenseReport"
         options={{
           title: "Expense Report",
@@ -66,7 +66,7 @@ const _layout = () => {
             ),
           headerShown: false,
         }}
-      />
+      /> */}
     </Tabs>
   );
 };

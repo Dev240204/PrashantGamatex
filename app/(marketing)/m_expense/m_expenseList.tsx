@@ -83,14 +83,9 @@ const ExpenseList: React.FC = () => {
   );
 
   return (
-    <ScrollView
-      keyboardShouldPersistTaps="handled"
-      refreshControl={
-        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-      }
-    >
+    <SafeAreaView style={{ flex: 1 }}>
       <StatusBar style="auto" />
-      <View className="flex-1 mx-3 my-5">
+      <View className="flex-1 mx-3 mb-5">
         <View className="px-3">
           <Text className="text-3xl font-bold">Expenses</Text>
           <Text className="text-sm text-gray-500">List of All Expenses</Text>
@@ -129,7 +124,7 @@ const ExpenseList: React.FC = () => {
           />
         )}
       </View>
-    </ScrollView>
+    </SafeAreaView>
   );
 };
 

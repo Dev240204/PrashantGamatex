@@ -1,10 +1,14 @@
 {
   "expo": {
-    "name": "Prashant Gamatex",
-    "slug": "prashant-gamatex",
+    "name": "Prashant Group",
+    "slug": "prashant-group",
     "version": "1.0.0",
     "runtimeVersion": "1.0.0",
-    "platforms": ["ios", "android", "web"],
+    "platforms": [
+      "ios",
+      "android",
+      "web"
+    ],
     "orientation": "portrait",
     "icon": "./assets/images/logo.png",
     "scheme": "myapp",
@@ -14,13 +18,20 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": true
     },
     "android": {
-      "permissions": ["INTERNET"],
-      "package": "com.dhruvwill.prashantgamatex"
+      "permissions": [
+        "android.permission.INTERNET",
+        "android.permission.READ_CONTACTS",
+        "android.permission.WRITE_CONTACTS",
+        "android.permission.RECORD_AUDIO"
+      ],
+      "package": "com.dhruvwill.prashantgroup"
     },
     "web": {
       "bundler": "metro",
@@ -39,7 +50,7 @@
       [
         "expo-image-picker",
         {
-          "photosPermission": "The app accesses your photos to let you share them with your friends."
+          "photosPermission": "The app accesses your photos to let upload photos."
         }
       ]
     ],
@@ -51,7 +62,7 @@
         "origin": false
       },
       "eas": {
-        "projectId": "03618714-5dcf-4209-b738-d9e61d872916"
+        "projectId": "8d4e2d26-6eef-46a9-8667-751c8f09995c"
       }
     }
   }

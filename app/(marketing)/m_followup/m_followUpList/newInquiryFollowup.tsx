@@ -31,14 +31,20 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import client from "~/api/client";
 import { ErrorResponse } from "~/types/query";
 import CheckboxWithLabel from "~/components/CheckboxWithLabel";
+import { Textarea } from "~/components/ui/textarea";
 
 const m_newfollowup = () => {
   const store = useUserStore();
   const router = useRouter();
   const queryClient = useQueryClient();
 
-  const { data } = useLocalSearchParams<{ data: string }>();
+  const { data, lastFollowupData } = useLocalSearchParams<{
+    data: string;
+    lastFollowupData: string;
+  }>();
   const parsedData: SalesInquiryFollowup | undefined = JSON.parse(data || "{}");
+
+  const parsedLastFollowupData: any = JSON.parse(lastFollowupData || "{}");
 
   const followupInsert = useInsertInquiryFollowup();
 
@@ -98,7 +104,8 @@ const m_newfollowup = () => {
     SalesQuotationDetailsId: parsedData?.SalesQuotationDetailsId || 0,
     FollowupDateTime: new Date(),
     FollowupEndDateTime: new Date(),
-    VisitTo: "",
+    VisitTo: parsedLastFollowupData.VisitTo || "",
+    // VisitTo: ,
     FollowupDetails: "",
     ModeOfContact: "Phone",
     documentSent: {
@@ -516,7 +523,7 @@ const m_newfollowup = () => {
             <Text className="color-[#222] dark:text-gray-300 mb-2 text-lg font-acumin">
               Follow Up Details
             </Text>
-            <TextInput
+            {/* <TextInput
               editable
               multiline
               numberOfLines={4}
@@ -532,6 +539,23 @@ const m_newfollowup = () => {
                 errors.FollowupDetails ? "border-red-500" : ""
               }`}
               value={form.FollowupDetails}
+            /> */}
+            <Textarea
+              autoCorrect={false}
+              editable
+              multiline
+              numberOfLines={4}
+              clearButtonMode="while-editing"
+              placeholder="Enter Follow Up Details"
+              className={`native:text-base rounded-lg dark:bg-gray-800 text-base font-medium text-[#222] dark:text-gray-100 ${
+                errors.FollowupDetails ? "border border-red-500" : ""
+              }`}
+              placeholderClassName="text-base text-muted"
+              value={form.FollowupDetails}
+              onChangeText={(followupdetails) =>
+                setForm({ ...form, FollowupDetails: followupdetails })
+              }
+              aria-labelledby="followup details"
             />
             {errors.FollowupDetails && (
               <Text className="text-red-500 text-sm mt-1">
@@ -661,10 +685,10 @@ const m_newfollowup = () => {
               {form.FollowupStatus === "Not Now" && (
                 <View className="mt-2">
                   <Text className="color-[#222] dark:text-gray-300 mb-2 text-lg font-acumin">
-                    Rating
+                    Project Status
                   </Text>
                   <CustomDropdown
-                    title="Ratings"
+                    title="Project Status"
                     itemsList={Ratings}
                     onValueChange={(value) => {
                       setForm({ ...form, Rating: value });

@@ -46,8 +46,8 @@ const LeadCard = ({
           <Text className="text-sm text-gray-600 ml-2">{timeFrame}</Text>
         </View>
       </View>
-      <View className="bg-gray-100 p-3 flex-row justify-between items-center">
-        <Text className="text-sm text-blue-600 font-semibold">View / Edit</Text>
+      <View className="bg-gray-100 p-3 flex-row justify-end items-center">
+        {/* <Text className="text-sm text-blue-600 font-semibold">View / Edit</Text> */}
         <View className="flex-row">
           <Text className="text-sm text-blue-600 font-semibold">
             Lead Details

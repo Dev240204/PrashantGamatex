@@ -46,6 +46,7 @@ const inquiryFollowupTimeline = () =>
     });
 
     const { top, bottom } = useSafeAreaInsets();
+
     return (
       <ScrollView className={`flex-1 bg-gray-100 px-4 py-6`}>
         <View className="mb-6">
@@ -76,16 +77,28 @@ const inquiryFollowupTimeline = () =>
               <View key={index} className="mb-8 flex-row">
                 <View className="absolute left-[12px] top-1 w-2 h-2 rounded-full bg-blue-500" />
                 <View className="ml-10 flex-1">
-                  <Text className="text-sm font-semibold text-gray-600 mb-2">
-                    {new Date(followup.FollowupDateTime).toLocaleDateString(
-                      "en-IN",
-                      {
-                        year: "numeric",
-                        month: "short",
-                        day: "numeric",
-                      }
-                    )}
-                  </Text>
+                  <View className="flex flex-row">
+                    <Text className="text-sm font-semibold text-gray-600 mb-2">
+                      {new Date(followup.FollowupDateTime).toLocaleDateString(
+                        "en-IN",
+                        {
+                          year: "numeric",
+                          month: "short",
+                          day: "numeric",
+                        }
+                      )}
+                      ,{" "}
+                    </Text>
+                    <Text className="text-sm text-gray-600">
+                      {new Date(followup.FollowupDateTime).toLocaleTimeString(
+                        "en-IN",
+                        {
+                          hour: "numeric",
+                          minute: "numeric",
+                        }
+                      )}
+                    </Text>
+                  </View>
                   <View className="bg-white rounded-lg shadow-sm p-4">
                     <Text className="text-lg font-bold text-gray-800 mb-2">
                       {followup.ModeofContact}
@@ -104,15 +117,9 @@ const inquiryFollowupTimeline = () =>
                       </Text>
                     </View>
                     <View className="flex-row items-center mb-3">
-                      <Ionicons name="time-outline" size={16} color="#4B5563" />
+                      <Ionicons name="documents" size={16} color="#4B5563" />
                       <Text className="text-sm text-gray-600 ml-2">
-                        {new Date(followup.FollowupDateTime).toLocaleTimeString(
-                          "en-IN",
-                          {
-                            hour: "numeric",
-                            minute: "numeric",
-                          }
-                        )}
+                        Documents
                       </Text>
                     </View>
                     {followup.FollowupStatus && (
@@ -137,7 +144,12 @@ const inquiryFollowupTimeline = () =>
               router.push({
                 pathname:
                   "/(marketing)/m_followup/m_followUpList/newQuotationFollowup",
-                params: { data },
+                params: {
+                  data,
+                  lastFollowupData: JSON.stringify(
+                    followupdata?.[followupdata.length - 1]
+                  ),
+                },
               });
             }}
           >

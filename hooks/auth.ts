@@ -63,5 +63,5 @@ export const useAuth = () => {
     }
   }, [user]);
 
-  return { isAuthenticated };
+  return { isAuthenticated, user };
 };

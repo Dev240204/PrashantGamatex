@@ -1,3 +1,4 @@
+import React from "react";
 import { View, Text, Image } from "react-native";
 import {
   DrawerContentScrollView,
@@ -7,6 +8,7 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { FontAwesome } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
+import { useAuth } from "~/hooks/auth"; // Make sure this path is correct
 
 const CustomDrawerContent = (props: any) => {
   const handleLogout = () => {
@@ -15,6 +17,8 @@ const CustomDrawerContent = (props: any) => {
   };
   const { top, bottom } = useSafeAreaInsets();
   const router = useRouter();
+  const { user } = useAuth();
+
   return (
     <View className="flex-1">
       <DrawerContentScrollView
@@ -31,6 +35,21 @@ const CustomDrawerContent = (props: any) => {
           </View>
         </View>
         <View style={{ paddingBottom: bottom }}>
+          {/* Profile Information */}
+          <View className="px-5 py-4 border-b border-gray-200 flex-row items-center">
+            <View className="w-12 h-12 bg-gray-300 rounded-full justify-center items-center mr-3">
+              <FontAwesome name="user" size={24} color="white" />
+            </View>
+            <View>
+              <Text className="text-lg font-bold">
+                {user?.data.name || "Prashant Shah"}{" "}
+              </Text>
+              <Text className="text-sm text-gray-600">
+                {user?.data.company || "@prashant"}
+              </Text>
+            </View>
+          </View>
+          {/* Logout Button */}
           <DrawerItem
             icon={({ color, size }) => (
               <Text style={{ color: color, fontSize: size }}>

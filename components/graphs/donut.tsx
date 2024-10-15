@@ -1,12 +1,19 @@
-import React from 'react';
-import { View, Text } from 'react-native';
-import Svg, { G, Path, Text as SvgText } from 'react-native-svg';
+import React, { useMemo } from "react";
+import { View, Text } from "react-native";
+import Svg, { Circle } from "react-native-svg";
+
+interface Section {
+  percentage: number;
+  color: string;
+  label: string;
+}
 
 interface DonutChartProps {
-  sections: { percentage: number; color: string; label: string }[];
+  sections: Section[];
   radius: number;
   strokeWidth: number;
   textColor: string;
+  backgroundColor?: string;
 }
 
 const DonutChart: React.FC<DonutChartProps> = ({
@@ -14,75 +21,98 @@ const DonutChart: React.FC<DonutChartProps> = ({
   radius,
   strokeWidth,
   textColor,
+  backgroundColor = "#f0f0f0",
 }) => {
-  const halfCircle = radius + strokeWidth;
-  const circleCircumference = 2 * Math.PI * radius;
-  let cumulativePercentage = 0;
+  const normalizedSections = useMemo(() => {
+    const total = sections.reduce(
+      (sum, section) => sum + Math.max(0, section.percentage),
+      0
+    );
+    if (total === 0)
+      return sections.map((section) => ({ ...section, percentage: 0 }));
+    return sections.map((section) => ({
+      ...section,
+      percentage: (Math.max(0, section.percentage) / total) * 100,
+    }));
+  }, [sections]);
 
-  const calculateArc = (percentage: number, startAngle: number) => {
-    const endAngle = startAngle + (percentage / 100) * 360;
-    const start = polarToCartesian(radius, startAngle);
-    const end = polarToCartesian(radius, endAngle);
-    const largeArcFlag = percentage > 50 ? 1 : 0;
+  const chartRadius = radius - strokeWidth / 2;
+  const circumference = 2 * Math.PI * chartRadius;
 
-    return `
-      M ${radius} ${radius}
-      L ${start.x} ${start.y}
-      A ${radius} ${radius} 0 ${largeArcFlag} 1 ${end.x} ${end.y}
-      Z
-    `;
+  const renderSections = () => {
+    let cumulativePercentage = 0;
+    return normalizedSections.map((section, index) => {
+      const strokeDasharray = `${
+        (section.percentage / 100) * circumference
+      } ${circumference}`;
+      const rotation = (cumulativePercentage / 100) * 360;
+      cumulativePercentage += section.percentage;
+
+      return (
+        <Circle
+          key={index}
+          cx={radius}
+          cy={radius}
+          r={chartRadius}
+          fill="none"
+          stroke={section.color}
+          strokeWidth={strokeWidth}
+          strokeDasharray={strokeDasharray}
+          rotation={rotation}
+          origin={`${radius}, ${radius}`}
+        />
+      );
+    });
   };
 
-  const polarToCartesian = (radius: number, angle: number) => {
-    const rad = (angle - 90) * (Math.PI / 180);
-    return {
-      x: radius + radius * Math.cos(rad),
-      y: radius + radius * Math.sin(rad),
-    };
+  const renderLegend = () => {
+    return normalizedSections.map((section, index) => (
+      <View key={index} className="flex flex-row items-center mb-1">
+        <View
+          className="w-5 h-5 mr-2"
+          style={{ backgroundColor: section.color }}
+        />
+        <Text className="text-base" style={{ color: textColor }}>
+          {section.label} - {section.percentage.toFixed(1)}%
+        </Text>
+      </View>
+    ));
   };
+
+  const isEmpty = normalizedSections.every(
+    (section) => section.percentage === 0
+  );
+
+  if (isEmpty) {
+    return (
+      <View className="flex items-center justify-center h-52">
+        <Text className="text-base" style={{ color: textColor }}>
+          No data to display
+        </Text>
+      </View>
+    );
+  }
 
   return (
-    <View className='w-full flex flex-col'>
-      {/* Pie Chart */}
-      {sections[0].percentage === 0 && (
-        <View className='flex items-center mt-5'>
-          <Text style={{ fontSize: 16, color: textColor }}>No data to display</Text>
-        </View>
-      )}
-      <View className='flex items-center'>
+    <View className="flex items-center p-5">
+      <View className="mb-5">
         <Svg
-          width={radius * 2 + 150}  // Increased width for space
-          height={radius * 2 + 100} // Increased height for space
-          viewBox={`0 0 ${radius * 2} ${radius * 2 + 30}`} // Adjusted viewBox
+          width={radius * 2}
+          height={radius * 2}
+          viewBox={`0 0 ${radius * 2} ${radius * 2}`}
         >
-          <G rotation="-90" origin={`${radius + strokeWidth}, ${radius + strokeWidth}`}>
-            {sections.map((section, index) => {
-              const startAngle = cumulativePercentage * 3.6;
-              const pathData = calculateArc(section.percentage, startAngle);
-              cumulativePercentage += section.percentage;
-
-              return (
-                <Path key={index} d={pathData} fill={section.color} stroke="none" />
-              );
-            })}
-          </G>
+          <Circle
+            cx={radius}
+            cy={radius}
+            r={chartRadius}
+            fill="none"
+            stroke={backgroundColor}
+            strokeWidth={strokeWidth}
+          />
+          {renderSections()}
         </Svg>
       </View>
-
-      {/* Legend */}
-      <View className='mt-3'>
-        {sections.map((section, index) => (
-          <View key={index} className='flex flex-row items-center mb-2'>
-            <View style={{
-              width: 20,
-              height: 20,
-              backgroundColor: section.color,
-              marginRight: 10
-            }} />
-            <Text style={{ fontSize: 16, color: textColor }}>{section.label} - {section.percentage}%</Text>
-          </View>
-        ))}
-      </View>
+      <View className="flex items-start">{renderLegend()}</View>
     </View>
   );
 };

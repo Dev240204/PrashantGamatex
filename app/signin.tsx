@@ -9,6 +9,7 @@ import {
 } from "react-native";
 import { ActivityIndicator } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { Label } from "~/components/ui/label";
 import {
   Select,
   SelectContent,
@@ -81,7 +82,6 @@ export default function Example() {
             <Text className="color-[#222] dark:text-gray-300 font-semibold mb-2 text-lg">
               Password
             </Text>
-
             <TextInput
               autoCorrect={false}
               clearButtonMode="while-editing"

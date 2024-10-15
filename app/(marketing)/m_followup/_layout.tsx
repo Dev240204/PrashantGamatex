@@ -29,7 +29,7 @@ const _layout = () => {
           headerShown: false,
         }}
       />
-      <Tabs.Screen
+      {/* <Tabs.Screen
         name="m_report"
         options={{
           title: "Report",
@@ -41,7 +41,7 @@ const _layout = () => {
             ),
           headerShown: false,
         }}
-      />
+      /> */}
       <Tabs.Screen
         name="m_newFollowUp"
         options={{

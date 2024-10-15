@@ -24,7 +24,7 @@ const _layout = () => {
       <Stack.Screen
         name="newInquiryFollowup"
         options={{
-          headerTitle: "New Inquiry Follow-Up",
+          headerTitle: "Inquiry Follow-Up",
           headerTitleStyle: {
             fontFamily: "acumin",
           },
@@ -37,7 +37,7 @@ const _layout = () => {
       <Stack.Screen
         name="newQuotationFollowup"
         options={{
-          headerTitle: "New Quotation Follow-Up",
+          headerTitle: "Quotation Follow-Up",
           headerTitleStyle: {
             fontFamily: "acumin",
           },
